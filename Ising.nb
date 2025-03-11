@@ -1,0 +1,620 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     24244,        610]
+NotebookOptionsPosition[     23522,        589]
+NotebookOutlinePosition[     23918,        605]
+CellTagsIndexPosition[     23875,        602]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "2", "D", " ", "Ising", " ", "Model", " ", "Simulation", " ", "with", " ",
+      "Metropolis"}], "-", 
+    RowBox[{"Hastings", " ", "Algorithm"}]}], "*)"}], 
+  RowBox[{"(*", 
+   RowBox[{
+   "Function", " ", "to", " ", "initialize", " ", "a", " ", "random", " ", 
+    "spin", " ", "configuration"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"InitializeSpins", "[", "n_", "]"}], ":=", 
+     RowBox[{"RandomChoice", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"n", ",", "n"}], "}"}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Function", " ", "to", " ", "calculate", " ", "the", " ", "energy", " ", 
+     "of", " ", "a", " ", "specific", " ", "site"}], "*)"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"SiteEnergy", "[", 
+      RowBox[{"spins_", ",", "i_", ",", "j_", ",", "J_"}], "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"n", "=", 
+          RowBox[{"Length", "[", "spins", "]"}]}], ",", 
+         RowBox[{"sum", "=", "0"}]}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"Periodic", " ", "boundary", " ", "conditions"}], "*)"}], 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"sum", "=", 
+         RowBox[{
+          RowBox[{"spins", "[", 
+           RowBox[{"[", 
+            RowBox[{"i", ",", "j"}], "]"}], "]"}], "*", "\[IndentingNewLine]", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"spins", "[", 
+             RowBox[{"[", 
+              RowBox[{
+               RowBox[{"Mod", "[", 
+                RowBox[{
+                 RowBox[{"i", "-", "1"}], ",", "n", ",", "1"}], "]"}], ",", 
+               "j"}], "]"}], "]"}], "+", 
+            RowBox[{"spins", "[", 
+             RowBox[{"[", 
+              RowBox[{
+               RowBox[{"Mod", "[", 
+                RowBox[{
+                 RowBox[{"i", "+", "1"}], ",", "n", ",", "1"}], "]"}], ",", 
+               "j"}], "]"}], "]"}], "+", 
+            RowBox[{"spins", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", 
+               RowBox[{"Mod", "[", 
+                RowBox[{
+                 RowBox[{"j", "-", "1"}], ",", "n", ",", "1"}], "]"}]}], 
+              "]"}], "]"}], "+", 
+            RowBox[{"spins", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", 
+               RowBox[{"Mod", "[", 
+                RowBox[{
+                 RowBox[{"j", "+", "1"}], ",", "n", ",", "1"}], "]"}]}], 
+              "]"}], "]"}]}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"-", "J"}], "*", "sum"}]}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Function", " ", "to", " ", "calculate", " ", "the", " ", "total", " ", 
+     "energy", " ", "of", " ", "the", " ", "system"}], "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"TotalEnergy", "[", 
+      RowBox[{"spins_", ",", "J_"}], "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"n", "=", 
+          RowBox[{"Length", "[", "spins", "]"}]}], ",", 
+         RowBox[{"energy", "=", "0"}]}], "}"}], ",", 
+       RowBox[{
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"i", "=", "1"}], ",", 
+          RowBox[{"i", "<=", "n"}], ",", 
+          RowBox[{"i", "++"}], ",", 
+          RowBox[{"For", "[", 
+           RowBox[{
+            RowBox[{"j", "=", "1"}], ",", 
+            RowBox[{"j", "<=", "n"}], ",", 
+            RowBox[{"j", "++"}], ",", 
+            RowBox[{
+             RowBox[{"energy", "+=", 
+              RowBox[{"SiteEnergy", "[", 
+               RowBox[{"spins", ",", "i", ",", "j", ",", "J"}], "]"}]}], 
+             ";"}]}], "]"}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"energy", "/", "2"}]}]}], "  ", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Divide", " ", "by", " ", "2", " ", "to", " ", "avoid", " ", "double", 
+        " ", "counting", " ", "bonds"}], "*)"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Function", " ", "to", " ", "calculate", " ", "the", " ", 
+     "magnetization"}], "*)"}], "\n", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Magnetization", "[", "spins_", "]"}], ":=", 
+     RowBox[{"Mean", "[", 
+      RowBox[{"Flatten", "[", "spins", "]"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Metropolis", "-", 
+     RowBox[{"Hastings", " ", "step"}]}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MetropolisStep", "[", 
+      RowBox[{"spins_", ",", "T_", ",", "J_"}], "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"n", "=", 
+          RowBox[{"Length", "[", "spins", "]"}]}], ",", 
+         RowBox[{"newSpins", "=", "spins"}], ",", "i", ",", "j", ",", 
+         "deltaE"}], "}"}], ",", 
+       RowBox[{"(*", 
+        RowBox[{"Choose", " ", "a", " ", "random", " ", "site"}], "*)"}], 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"i", "=", 
+         RowBox[{"RandomInteger", "[", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "n"}], "}"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"j", "=", 
+         RowBox[{"RandomInteger", "[", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "n"}], "}"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+         "Calculate", " ", "energy", " ", "change", " ", "if", " ", "we", " ",
+           "flip", " ", "this", " ", "spin"}], "*)"}], "\[IndentingNewLine]", 
+        
+        RowBox[{"deltaE", "=", 
+         RowBox[{
+          RowBox[{"-", "2"}], "*", 
+          RowBox[{"SiteEnergy", "[", 
+           RowBox[{"newSpins", ",", "i", ",", "j", ",", "J"}], "]"}]}]}], ";",
+         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{"Metropolis", " ", "acceptance", " ", "rule"}], "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"deltaE", "<=", "0"}], "||", 
+           RowBox[{
+            RowBox[{"RandomReal", "[", "]"}], "<", 
+            RowBox[{"Exp", "[", 
+             RowBox[{
+              RowBox[{"-", "deltaE"}], "/", "T"}], "]"}]}]}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"(*", 
+           RowBox[{"Accept", " ", "the", " ", "flip"}], "*)"}], 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"newSpins", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", "j"}], "]"}], "]"}], "=", 
+            RowBox[{"-", 
+             RowBox[{"newSpins", "[", 
+              RowBox[{"[", 
+               RowBox[{"i", ",", "j"}], "]"}], "]"}]}]}], ";"}]}], "]"}], ";",
+         "\[IndentingNewLine]", "newSpins"}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Function", " ", "to", " ", "run", " ", "the", " ", "simulation", " ", 
+     "and", " ", "create", " ", "an", " ", "animation"}], "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"SimulateIsingModel", "[", 
+      RowBox[{"n_", ",", "T_", ",", "steps_", ",", 
+       RowBox[{"J_", ":", "1"}], ",", 
+       RowBox[{"sweepsPerFrame_", ":", "1"}], ",", 
+       RowBox[{"saveFrames_", ":", "100"}]}], "]"}], ":=", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Module", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"spins", "=", 
+          RowBox[{"InitializeSpins", "[", "n", "]"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"history", "=", 
+          RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"energyHistory", "=", 
+          RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"magHistory", "=", 
+          RowBox[{"{", "}"}]}], ",", "i", ",", "j", ",", "frame"}], "}"}], ",",
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+        "Initialize", " ", "with", " ", "random", " ", "configuration"}], 
+        "*)"}], "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"spins", "=", 
+         RowBox[{"InitializeSpins", "[", "n", "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{"Set", " ", "up", " ", "progress", " ", "tracking"}], "*)"}],
+         "\[IndentingNewLine]", 
+        RowBox[{
+        "Monitor", "[", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"(*", 
+          RowBox[{"Run", " ", "simulation"}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"For", "[", 
+           RowBox[{
+            RowBox[{"frame", "=", "1"}], ",", 
+            RowBox[{"frame", "<=", "saveFrames"}], ",", 
+            RowBox[{"frame", "++"}], ",", "\[IndentingNewLine]", 
+            "\[IndentingNewLine]", 
+            RowBox[{"(*", 
+             RowBox[{
+             "Do", " ", "multiple", " ", "sweeps", " ", "per", " ", "saved", " ",
+               "frame"}], "*)"}], "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"For", "[", 
+              RowBox[{
+               RowBox[{"i", "=", "1"}], ",", 
+               RowBox[{"i", "<=", "sweepsPerFrame"}], ",", 
+               RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+               "\[IndentingNewLine]", 
+               RowBox[{"(*", 
+                RowBox[{
+                "Each", " ", "sweep", " ", "consists", " ", "of", " ", 
+                 "n\.b2", " ", "attempted", " ", "flips"}], "*)"}], 
+               "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"For", "[", 
+                 RowBox[{
+                  RowBox[{"j", "=", "1"}], ",", 
+                  RowBox[{"j", "<=", 
+                   RowBox[{"n", "^", "2"}]}], ",", 
+                  RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+                  RowBox[{
+                   RowBox[{"spins", "=", 
+                    RowBox[{"MetropolisStep", "[", 
+                    RowBox[{"spins", ",", "T", ",", "J"}], "]"}]}], ";"}]}], 
+                 "]"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+             "\[IndentingNewLine]", 
+             RowBox[{"(*", 
+              RowBox[{"Save", " ", "current", " ", "state"}], "*)"}], 
+             "\[IndentingNewLine]", 
+             RowBox[{"AppendTo", "[", 
+              RowBox[{"history", ",", "spins"}], "]"}], ";", 
+             "\[IndentingNewLine]", 
+             RowBox[{"AppendTo", "[", 
+              RowBox[{"energyHistory", ",", 
+               RowBox[{
+                RowBox[{"TotalEnergy", "[", 
+                 RowBox[{"spins", ",", "J"}], "]"}], "/", 
+                RowBox[{"(", 
+                 RowBox[{"n", "^", "2"}], ")"}]}]}], "]"}], ";", 
+             "\[IndentingNewLine]", "\[IndentingNewLine]", 
+             RowBox[{"(*", 
+              RowBox[{"Energy", " ", "per", " ", "site"}], "*)"}], 
+             "\[IndentingNewLine]", 
+             RowBox[{"AppendTo", "[", 
+              RowBox[{"magHistory", ",", 
+               RowBox[{"Magnetization", "[", "spins", "]"}]}], "]"}], ";"}]}],
+            "]"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"(*", 
+           RowBox[{"Display", " ", "progress"}], "*)"}], 
+          "\[IndentingNewLine]", 
+          RowBox[{"Column", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"ProgressIndicator", "[", 
+              RowBox[{"frame", ",", 
+               RowBox[{"{", 
+                RowBox[{"1", ",", "saveFrames"}], "}"}]}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Text", "[", 
+              RowBox[{"\"\<Frame: \>\"", "<>", 
+               RowBox[{"ToString", "[", "frame", "]"}], "<>", "\"\</\>\"", "<>", 
+               RowBox[{"ToString", "[", "saveFrames", "]"}]}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"ArrayPlot", "[", 
+              RowBox[{"spins", ",", 
+               RowBox[{"ColorRules", "->", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"1", "->", "Black"}], ",", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "->", "White"}]}], "}"}]}], ",", 
+               RowBox[{"Frame", "->", "False"}]}], "]"}]}], "}"}], "]"}]}], 
+         "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+         "Create", " ", "animation", " ", "of", " ", "the", " ", 
+          "simulation"}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"animation", "=", 
+         RowBox[{"Animate", "[", 
+          RowBox[{
+           RowBox[{"Grid", "[", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"ArrayPlot", "[", 
+                RowBox[{
+                 RowBox[{"history", "[", 
+                  RowBox[{"[", "t", "]"}], "]"}], ",", 
+                 RowBox[{"ColorRules", "->", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"1", "->", "Black"}], ",", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], "->", "White"}]}], "}"}]}], ",", 
+                 RowBox[{"Frame", "->", "False"}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"ImageSize", "->", "400"}], ",", 
+                 RowBox[{"PlotLabel", "->", 
+                  RowBox[{"\"\<T = \>\"", "<>", 
+                   RowBox[{"ToString", "[", "T", "]"}], 
+                   "<>", "\"\<, Step: \>\"", "<>", 
+                   RowBox[{"ToString", "[", "t", "]"}]}]}]}], "]"}], "}"}], ",",
+               "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{"ListLinePlot", "[", 
+                RowBox[{
+                 RowBox[{"energyHistory", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ";;", "t"}], "]"}], "]"}], ",", 
+                 RowBox[{"PlotRange", "->", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"Min", "[", "energyHistory", "]"}], "-", "0.1"}], 
+                    ",", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"Max", "[", "energyHistory", "]"}], "+", 
+                    "0.1"}]}], "}"}]}], ",", 
+                 RowBox[{"PlotLabel", "->", "\"\<Energy per Site\>\""}], ",", 
+                 
+                 RowBox[{"ImageSize", "->", "400"}]}], "]"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"ListLinePlot", "[", 
+                RowBox[{
+                 RowBox[{"magHistory", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ";;", "t"}], "]"}], "]"}], ",", 
+                 RowBox[{"PlotRange", "->", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"-", "1.1"}], ",", "1.1"}], "}"}]}], ",", 
+                 RowBox[{"PlotLabel", "->", "\"\<Magnetization\>\""}], ",", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"ImageSize", "->", "400"}]}], "]"}], "}"}]}], "}"}], 
+            "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"t", ",", "1", ",", 
+             RowBox[{"Length", "[", "history", "]"}], ",", "1"}], "}"}], ",", 
+           
+           RowBox[{"AnimationRate", "->", "10"}], ",", 
+           RowBox[{"AnimationRunning", "->", "False"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+         "Return", " ", "the", " ", "animation", " ", "and", " ", "data"}], 
+         "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"\"\<Animation\>\"", "->", "animation"}], ",", 
+          RowBox[{"\"\<FinalState\>\"", "->", 
+           RowBox[{"Last", "[", "history", "]"}]}], ",", 
+          RowBox[{"\"\<EnergyHistory\>\"", "->", "energyHistory"}], ",", 
+          RowBox[{"\"\<MagnetizationHistory\>\"", "->", "magHistory"}]}], 
+         "}"}]}]}], "]"}]}], ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.9507058562254457`*^9, 3.95070592911648*^9}, {
+  3.95070614061585*^9, 3.950706230478796*^9}},
+ CellLabel->
+  "In[101]:=",ExpressionUUID->"40f083c5-1aa4-425e-b7a1-e466c1d5938f"],
+
+Cell[CellGroupData[{
+
+Cell["Execution", "Section",
+ CellChangeTimes->{{3.950706327555326*^9, 
+  3.950706329380721*^9}},ExpressionUUID->"b7450783-c0b9-4fca-94fe-\
+7c4ac65e020e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Example", " ", "Usage"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"n", "=", 
+    RowBox[{
+     RowBox[{"grid", " ", "size", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"e", ".", "g", "."}], ",", 
+        RowBox[{
+        "50", " ", "for", " ", "a", " ", "50", "\[Times]", "50", " ", 
+         "lattice"}]}], ")"}], " ", "T"}], "=", 
+     RowBox[{
+      RowBox[{"temperature", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+         "in", " ", "units", " ", "where", " ", "Boltzmann", " ", "constant", 
+          " ", "k"}], "=", "1"}], ")"}], " ", "steps"}], "=", 
+      RowBox[{
+       RowBox[{
+       "number", " ", "of", " ", "frames", " ", "to", " ", "save", " ", "J"}],
+        "=", 
+       RowBox[{
+        RowBox[{"coupling", " ", "constant", " ", 
+         RowBox[{"(", 
+          RowBox[{"default", ":", "1"}], ")"}], " ", "sweepsPerFrame"}], "=", 
+        
+        RowBox[{
+        "number", " ", "of", " ", "full", " ", "lattice", " ", "sweeps", " ", 
+         "between", " ", "frames", " ", 
+         RowBox[{"(", 
+          RowBox[{"default", ":", "1"}], ")"}], " ", "Try", " ", "different", 
+         " ", "temperature", " ", 
+         RowBox[{"values", ":", 
+          RowBox[{
+           RowBox[{"-", "T"}], "<", "2.27"}], ":", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"System", " ", "should", " ", "order", " ", 
+             RowBox[{"(", 
+              RowBox[{"ferromagnetic", " ", "phase"}], ")"}]}], "-", "T"}], ">",
+            "2.27"}], ":", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"System", " ", "should", " ", "be", " ", "disordered", " ", 
+             RowBox[{"(", 
+              RowBox[{"paramagnetic", " ", "phase"}], ")"}]}], "-", "T"}], "\[TildeTilde]",
+            "2.27"}], ":", 
+          RowBox[{
+          "Critical", " ", "point", " ", "with", " ", "interesting", " ", 
+           "behavior"}]}]}]}]}]}]}]}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Run", " ", "the", " ", "simulation"}], "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"result", "=", 
+     RowBox[{"SimulateIsingModel", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"n", "=", "50"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"50", "\[Times]", "50", " ", "grid"}], "*)"}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"T", "=", "2.7"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"Temperature", " ", "below", " ", "critical", " ", "point"}], 
+        "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"steps", "=", "100"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"Save", " ", "100", " ", "frames"}], "*)"}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"J", "=", "1"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"Coupling", " ", "constant"}], "*)"}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"sweepsPerFrame", "=", "5"}]}], "  ", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "5", " ", "full", " ", "lattice", " ", "sweeps", " ", "between", " ", 
+        "frames"}], "*)"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Display", " ", "the", " ", "animation"}], "*)"}], "\n", 
+   RowBox[{"result", "[", "\"\<Animation\>\"", "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Plot", " ", "final", " ", "energy", " ", "and", " ", "magnetization", " ",
+      "evolution"}], "*)"}], "\n", 
+   RowBox[{"Grid", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"ListLinePlot", "[", 
+        RowBox[{
+         RowBox[{"result", "[", "\"\<EnergyHistory\>\"", "]"}], ",", 
+         RowBox[{"PlotLabel", "->", "\"\<Energy per Site\>\""}], ",", 
+         RowBox[{"AxesLabel", "->", 
+          RowBox[{"{", 
+           RowBox[{"\"\<Time Step\>\"", ",", "\"\<Energy\>\""}], "}"}]}]}], 
+        "]"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"ListLinePlot", "[", 
+        RowBox[{
+         RowBox[{"result", "[", "\"\<MagnetizationHistory\>\"", "]"}], ",", 
+         RowBox[{"PlotLabel", "->", "\"\<Magnetization\>\""}], ",", 
+         RowBox[{"AxesLabel", "->", 
+          RowBox[{"{", 
+           RowBox[{"\"\<Time Step\>\"", ",", "\"\<M\>\""}], "}"}]}], ",", 
+         RowBox[{"PlotRange", "->", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1.1"}], ",", "1.1"}], "}"}]}]}], "]"}], "}"}]}], 
+     "}"}], "]"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"To", " ", "save", " ", "the", " ", "animation"}], "*)"}], "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"Export", "[", 
+      RowBox[{"\"\<ising_simulation.gif\>\"", ",", 
+       RowBox[{"result", "[", "\"\<Animation\>\"", "]"}], ",", "\"\<GIF\>\"", 
+       ",", 
+       RowBox[{"\"\<AnimationRepetitions\>\"", "->", "Infinity"}], ",", 
+       RowBox[{"\"\<DisplayDurations\>\"", "->", "0.1"}]}], "]"}], ";"}], 
+    "*)"}]}]}]], "Input",
+ CellChangeTimes->{{3.950706318540194*^9, 3.9507063605673656`*^9}, {
+  3.9507064013650923`*^9, 3.9507064024088984`*^9}},
+ CellLabel->
+  "In[119]:=",ExpressionUUID->"63b98216-c32a-4910-b2f4-5faae44f88e9"],
+
+Cell[BoxData[
+ DynamicBox[ToBoxes[
+   Column[{
+     ProgressIndicator[$CellContext`frame$3284972, {1, 100}], 
+     Text[
+     "Frame: " <> ToString[$CellContext`frame$3284972] <> "/" <> 
+      ToString[100]], 
+     ArrayPlot[$CellContext`spins$3284972, 
+      ColorRules -> {1 -> Black, -1 -> White}, Frame -> False]}], 
+   StandardForm],
+  Evaluator->"Local",
+  ImageSizeCache->{
+   300., {156.36022578125, 164.29674921875}}]], "PrintTemporary",
+ CellChangeTimes->{3.950706408950653*^9},
+ CellLabel->
+  "During evaluation of \
+In[119]:=",ExpressionUUID->"9a2c70f4-e57b-4d90-8aff-37e8e7c53d18"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1424, 831},
+WindowMargins->{{8, Automatic}, {Automatic, 8}},
+FrontEndVersion->"14.2 for Mac OS X ARM (64-bit) (December 26, 2024)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"48036e57-6ac6-4f09-a67c-fb8ca883d210"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 16710, 405, 2740, "Input",ExpressionUUID->"40f083c5-1aa4-425e-b7a1-e466c1d5938f"],
+Cell[CellGroupData[{
+Cell[17289, 429, 154, 3, 99, "Section",ExpressionUUID->"b7450783-c0b9-4fca-94fe-7c4ac65e020e"],
+Cell[CellGroupData[{
+Cell[17468, 436, 5429, 131, 1177, "Input",ExpressionUUID->"63b98216-c32a-4910-b2f4-5faae44f88e9"],
+Cell[22900, 569, 594, 16, 332, "PrintTemporary",ExpressionUUID->"9a2c70f4-e57b-4d90-8aff-37e8e7c53d18"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
