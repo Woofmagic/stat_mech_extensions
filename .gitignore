@@ -168,6 +168,3 @@ cython_debug/
 
 # TensorFlow model file:
 *.keras
-
-# These are sometimes huge:
-*.csv
