@@ -14,10 +14,10 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 # (X): Define a version number so we don't get confused:
-_version_number = "1.5"
+_version_number = "1.1"
 
 # (X): Dynamically set the plot title using the version number:
-PLOT_TITLE = f"sis_dynamics_generic_params_v{_version_number}"
+PLOT_TITLE = f"sis_kinematics_generic_params_v{_version_number}"
 
 # (X): Fix the plot directory for the SIS analysis:
 # PLOT_DIRECTORY = "plots"
@@ -110,30 +110,38 @@ TIME_SLICES = np.linspace(*TIME_INTERVAL, NUMBER_OF_TIME_SLICES)
 if (INITIAL_SUSCEPTIBLE + INITIAL_INFECTED != 1.0):
     raise ValueError(f"> Simulation parameters do not respect noramalization condition.")
 
-def first_order_ode(t, vector_of_equations):
+def second_order_ode(t, vector_of_equations):
     """
     ## Description:
-    Numerically evaluate a system of first-order, ordinary differential equations (ODE).
+    Numerically evaluate a second-order, ordinary differential equation (ODE)
+    using the technique of reduction-of-order.
+
+    ## Notes:
+    The technique of reduction-of-order is nothing more than regarding the 
+    first derivative of the dynamical variable, say x', as an entirely *separate* variable 
+    according to the assignment below:
+    (i) x' = v, (ii) v' = f(x), where (iii) x'' = f(x), the original ODE.
+    (Primes are time-derivatives, of course.)
     """
+    # (1): Unpack the standard "vector" of dynamical variables: x^[T] rep. as (x, v):
+    position_value, velocity_value = vector_of_equations
+
+    # (2): As per reduction of order, x' is nothing but v:
+    x_dot = velocity_value
+
+    # (3): As per reduction of order, v' is nothing but x'', and it
+    # | *is* the standard ODE:
+    v_dot = (-position_value * np.exp(PARAMETER_BETA * position_value))
     
-    # (1): We first unpack the *vector* (list) of equations:
-    x, y = vector_of_equations
-
-    # (2): Here, we define the function that governs x', usually x' = f(x, y; t):
-    x_dot = - PARAMETER_BETA * x * y + PARAMETER_GAMMA * y
-
-    # (3): Same as above except for y' = g(x, y; t):
-    y_dot = PARAMETER_BETA * x * y - PARAMETER_GAMMA * y
-
-    # (4): Repackage the equations in a vector (list):
-    return [x_dot, y_dot]
+    # (4): Return an "effective vector" (list) that is just dot(x)^{T} = (x', v'):
+    return [x_dot, v_dot]
 
 # (X): Use SciPy's IVP numerical integrator to do the calculation.
 # | This is *the* actual simulation. This is where it happens:
 numerical_solution = solve_ivp(
 
     # (X.1): It needs *the* function we are numerically integrating:
-    fun = first_order_ode, 
+    fun = second_order_ode, 
 
     # (X.2): It needs the interval of the real line (time axis) to do the integration over:
     t_span = TIME_INTERVAL, 
@@ -145,33 +153,49 @@ numerical_solution = solve_ivp(
     t_eval = TIME_SLICES)
 
 # (X): As part of SciPy's `solve_ivp`, extract the time "history":
-time_axis = numerical_solution.t
+t = numerical_solution.t
 
 # (X): Same as above, but extract the first component of the y *vector* (list):
-susceptible_per_time = numerical_solution.y[0]
+x = numerical_solution.y[0]
 
 # (X): Same as above, but now the second component:
-infected_per_time = numerical_solution.y[1]
+v = numerical_solution.y[1]
+
+# (X): We solved for x and v, and *now* we can plug-and-chug for the corresponding x'':
+a = (-v * np.exp(PARAMETER_BETA * x))
 
 # (1): Set up the Figure instance and the *two* Axes objects:
-figure_instance, axis_instance =  plt.subplots(
-    nrows = 1, 
+figure_instance, (axis_instance_position,
+ axis_instance_velocity,
+ axis_instance_acceleration) =  plt.subplots(
+    nrows = 3, 
     ncols = 1, 
     sharex = True,
     figsize = (10, 5.5))
 
 # (X): The rest of the script just makes the plots. We will comment them better later:
 
-axis_instance.plot(time_axis, susceptible_per_time, color = 'orange', label = "Percentage Susceptible")
-axis_instance.plot(time_axis, infected_per_time, color = 'red', label = "Percentage Infected")
-axis_instance.set_ylabel(r"$N$", rotation = 0, labelpad = 17.0, fontsize = 18)
-axis_instance.set_title(fr"Compartmental Evolution with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
-axis_instance.set_ylim(ymin = -0.1, ymax = 1.1)
-axis_instance.set_xlim(xmin = TIME_STARTING_VALUE - 0.1, xmax = TIME_ENDING_VALUE + 0.1)
-axis_instance.tick_params(labelsize = 17)
+axis_instance_position.plot(t, x, color = 'green')
+axis_instance_position.set_ylabel(r"$q(t)$", rotation = 0, labelpad = 17.0, fontsize = 18)
+axis_instance_position.set_title(fr"Position vs. Time with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
+# axis_instance_position.set_ylim(ymin = 0.7, ymax = 1.3)
+axis_instance_position.set_xlim(xmin = TIME_STARTING_VALUE - 0.1, xmax = TIME_ENDING_VALUE + 0.1)
+axis_instance_position.tick_params(labelsize = 17)
 
-# (X): Add the legend for clarity:
-plt.legend(fontsize = 17)
+axis_instance_velocity.plot(t, v, color = 'orange')
+axis_instance_velocity.set_ylabel(r"$\dot{q}(t)$", rotation = 0, labelpad = 17.0, fontsize = 18)
+axis_instance_velocity.set_title(fr"Velocity vs. Time with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
+# axis_instance_velocity.set_ylim(ymin = -0.08, ymax = 0.08)
+axis_instance_velocity.set_xlim(xmin = TIME_STARTING_VALUE - 0.1, xmax = TIME_ENDING_VALUE + 0.1)
+axis_instance_velocity.tick_params(labelsize = 17)
+
+axis_instance_acceleration.plot(t, a, color = 'red')
+axis_instance_acceleration.set_ylabel(r"$\ddot{q}(t)$", rotation = 0, labelpad = 17.0, fontsize = 18)
+axis_instance_acceleration.set_xlabel(r"Time ($t$)", fontsize = 18)
+axis_instance_acceleration.set_title(fr"Acceleration vs. Time with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
+# axis_instance_acceleration.set_ylim(ymin = -0.08, ymax = 0.08)
+axis_instance_acceleration.set_xlim(xmin = TIME_STARTING_VALUE - 0.1, xmax = TIME_ENDING_VALUE + 0.1)
+axis_instance_acceleration.tick_params(labelsize = 17)
 
 # (X): Tight layout... ya know:
 plt.tight_layout(pad = 2.0)

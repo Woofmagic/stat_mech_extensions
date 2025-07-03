@@ -10,14 +10,20 @@ import numpy as np
 # 3rd Party Library | Matplotlib:
 import matplotlib.pyplot as plt
 
+# 3rd Party Library | Matplotlib:
+from matplotlib.collections import LineCollection
+
+# 3rd Party Library | Matplotlib:
+from matplotlib.colors import Normalize
+
 # 3rd Party Library | SciPy:
 from scipy.integrate import solve_ivp
 
 # (X): Define a version number so we don't get confused:
-_version_number = "1.5"
+_version_number = "1.1"
 
 # (X): Dynamically set the plot title using the version number:
-PLOT_TITLE = f"sis_dynamics_generic_params_v{_version_number}"
+PLOT_TITLE = f"sis_phase_dynamics_generic_params_v{_version_number}"
 
 # (X): Fix the plot directory for the SIS analysis:
 # PLOT_DIRECTORY = "plots"
@@ -161,17 +167,25 @@ figure_instance, axis_instance =  plt.subplots(
     figsize = (10, 5.5))
 
 # (X): The rest of the script just makes the plots. We will comment them better later:
+points = np.array([susceptible_per_time, infected_per_time]).T.reshape(-1, 1, 2)
 
-axis_instance.plot(time_axis, susceptible_per_time, color = 'orange', label = "Percentage Susceptible")
-axis_instance.plot(time_axis, infected_per_time, color = 'red', label = "Percentage Infected")
-axis_instance.set_ylabel(r"$N$", rotation = 0, labelpad = 17.0, fontsize = 18)
-axis_instance.set_title(fr"Compartmental Evolution with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
-axis_instance.set_ylim(ymin = -0.1, ymax = 1.1)
-axis_instance.set_xlim(xmin = TIME_STARTING_VALUE - 0.1, xmax = TIME_ENDING_VALUE + 0.1)
+segments = np.concatenate([points[:-1], points[1:]], axis = 1)
+
+norm = Normalize(time_axis.min(), time_axis.max())
+lc = LineCollection(segments, cmap = 'plasma', norm = norm)
+lc.set_array(time_axis)
+lc.set_linewidth(2)
+line = axis_instance.add_collection(lc)
+
+axis_instance.set_xlabel(r"Susceptible $S$")
+axis_instance.set_ylabel(r"Infected $I$")
+axis_instance.set_title(fr"SIS Phase Evolution with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
+axis_instance.set_xlim(susceptible_per_time.min(), susceptible_per_time.max())
+axis_instance.set_ylim(infected_per_time.min(), infected_per_time.max())
 axis_instance.tick_params(labelsize = 17)
 
-# (X): Add the legend for clarity:
-plt.legend(fontsize = 17)
+# (X): Add a grid for clarity:
+plt.grid(True)
 
 # (X): Tight layout... ya know:
 plt.tight_layout(pad = 2.0)
