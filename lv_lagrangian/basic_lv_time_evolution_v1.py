@@ -32,7 +32,7 @@ _version_number = "1.2"
 PLOT_TITLE = f"lv_dynamics_generic_params_v{_version_number}"
 
 #################################
-# Simulation Parameters
+# Plotting Configuration
 #################################
 # (X): We tell rcParams to use LaTeX. [NOTE]: this will *crash* your 
 # | version of the code if you do not have TeX distribution installed!
