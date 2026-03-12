@@ -2,7 +2,14 @@
 The script that was used to generate (i) plots showing the kinematics associated with the 
 derived second-order ODE that represents the single "SIS particle" and (ii) plots showing the
 "potential well" that we have interpreted the SIS particle to be moving within.
+
+Date initialized: 20250701
+Last edited: 20260312
 """
+
+#################################
+# Importing Libraries
+#################################
 
 # 3rd Party Library | NumPy
 import numpy as np
@@ -19,63 +26,40 @@ from matplotlib.colors import Normalize
 # 3rd Party Library | SciPy:
 from scipy.integrate import solve_ivp
 
-# (X): Define a version number so we don't get confused:
-_version_number = "1.1"
+#################################
+# File Information
+#################################
 
-# (X): Dynamically set the plot title using the version number:
+_version_number = "1.2"
 PLOT_TITLE = f"sis_phase_dynamics_generic_params_v{_version_number}"
 
 # (X): Fix the plot directory for the SIS analysis:
 # PLOT_DIRECTORY = "plots"
 
-# (X): We tell rcParams to use LaTeX. Note: this will *crash* your 
+#################################
+# Plotting Configuration
+#################################
+# (X): We tell rcParams to use LaTeX. [NOTE]: this will *crash* your 
 # | version of the code if you do not have TeX distribution installed!
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-})
-
-# (X): rcParams for the x-axis tick direction:
+plt.rcParams.update({"text.usetex": True, "font.family": "serif"})
 plt.rcParams['xtick.direction'] = 'in'
-
-# (X): rcParams for the "major" (larger) x-axis vertical size:
 plt.rcParams['xtick.major.size'] = 5
-
-# (X): rcParams for the "major" (larger) x-axis horizonal width:
 plt.rcParams['xtick.major.width'] = 0.5
-
-# (X): rcParams for the "minor" (smaller) x-axis vertical size:
 plt.rcParams['xtick.minor.size'] = 2.5
-
-# (X): rcParams for the "minor" (smaller) x-axis horizonal width:
 plt.rcParams['xtick.minor.width'] = 0.5
-
-# (X): rcParams for the minor ticks to be *shown* versus invisible:
 plt.rcParams['xtick.minor.visible'] = True
-
-# (X): rcParams dictating that we want ticks along the x-axis on *top* (opposite side) of the bounding box:
 plt.rcParams['xtick.top'] = True    
-
-# (X): rcParams for the y-axis tick direction:
 plt.rcParams['ytick.direction'] = 'in'
-
-# (X): rcParams for the "major" (larger) y-axis vertical size:
 plt.rcParams['ytick.major.size'] = 5
-
-# (X): rcParams for the "major" (larger) y-axis horizonal width:
 plt.rcParams['ytick.major.width'] = 0.5
-
-# (X): rcParams for the "minor" (smaller) y-axis vertical size:
 plt.rcParams['ytick.minor.size'] = 2.5
-
-# (X): rcParams for the "minor" (smaller) y-axis horizonal width:
 plt.rcParams['ytick.minor.width'] = 0.5
-
-# (X): rcParams for the minor ticks to be *shown* versus invisible:
 plt.rcParams['ytick.minor.visible'] = True
-
-# (X): rcParams dictating that we want ticks along the y-axis on the *left* of the bounding box:
 plt.rcParams['ytick.right'] = True
+
+#################################
+# Simulation Parameters
+#################################
 
 # (X): Simulation Parameter | probability of contracting illness:
 PROBABILITY_OF_CONTRACTION = 0.1
@@ -99,7 +83,7 @@ INITIAL_INFECTED = 0.1
 TIME_STARTING_VALUE = 0
 
 # (X): Simulation Parameter | simulation's ending "t" value:
-TIME_ENDING_VALUE = 100
+TIME_ENDING_VALUE = 10
 
 # (X): Simulation Parameter | simulation's Δt:
 NUMBER_OF_TIME_SLICES = 1000
@@ -161,12 +145,8 @@ infected_per_time = numerical_solution.y[1]
 
 # (1): Set up the Figure instance and the *two* Axes objects:
 figure_instance, axis_instance =  plt.subplots(
-    nrows = 1, 
-    ncols = 1, 
-    sharex = True,
-    figsize = (10, 5.5))
+    nrows = 1, ncols = 1, sharex = True, figsize = (10, 5.5))
 
-# (X): The rest of the script just makes the plots. We will comment them better later:
 points = np.array([susceptible_per_time, infected_per_time]).T.reshape(-1, 1, 2)
 
 segments = np.concatenate([points[:-1], points[1:]], axis = 1)
@@ -180,23 +160,14 @@ line = axis_instance.add_collection(lc)
 axis_instance.set_xlabel(r"Susceptible $S$")
 axis_instance.set_ylabel(r"Infected $I$")
 axis_instance.set_title(fr"SIS Phase Evolution with $\beta = {PARAMETER_BETA}, \gamma = {PARAMETER_GAMMA}$", fontsize = 18)
+
 axis_instance.set_xlim(susceptible_per_time.min(), susceptible_per_time.max())
 axis_instance.set_ylim(infected_per_time.min(), infected_per_time.max())
 axis_instance.tick_params(labelsize = 17)
+axis_instance.grid(True)
 
-# (X): Add a grid for clarity:
-plt.grid(True)
 
-# (X): Tight layout... ya know:
-plt.tight_layout(pad = 2.0)
-
-# (X): Save a version of the figure according to .eps format for Overleaf stuff:
-# plt.savefig(f"{PLOT_DIRECTORY}/{PLOT_TITLE}.eps", format = "eps")
 plt.savefig(f"{PLOT_TITLE}.eps", format = "eps")
-
-# (X): Save an immediately-visualizable figure with vector graphics:
-# plt.savefig(f"{PLOT_DIRECTORY}/{PLOT_TITLE}.svg", format = "svg")
 plt.savefig(f"{PLOT_TITLE}.svg", format = "svg")
 
-# (X): Closing figures:
-plt.close()
+plt.close(figure_instance)
