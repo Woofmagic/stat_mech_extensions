@@ -1,0 +1,864 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     29847,        856]
+NotebookOptionsPosition[     25425,        763]
+NotebookOutlinePosition[     25817,        779]
+CellTagsIndexPosition[     25774,        776]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Nucci-2012: Lagrangians for Biological Models \
+(https://doi.org/10.1142/S1402925112500210)\
+\>", "Title",
+ CellChangeTimes->{{3.990217862275579*^9, 3.990217871672862*^9}, {
+  3.990219366183927*^9, 
+  3.9902193803415937`*^9}},ExpressionUUID->"cfec5e9a-a400-4593-a4e1-\
+454d4e481c09"],
+
+Cell[TextData[{
+ "The main point of this short notebook is to verify that an argument made in \
+this paper is not sound. The argument is made on page 6:  \
+\[OpenCurlyDoubleQuote]We note that [the LV equations] are autonomous and \
+therefore invariant under time translation, namely ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[PartialD]", "t"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "fedb862a-77f7-4436-8dd2-0902a0877a06"],
+ ". It is easy to show that the Lagrangian ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["L", 
+    RowBox[{"[", "w", "]"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "6206a39d-3af8-4cba-afd5-b44709df1813"],
+ " in (24) yields a time-invariant first integral through Noether\
+\[CloseCurlyQuote]s theorem [15]...\[CloseCurlyDoubleQuote] The issue is the \
+following: we must not conflate autonomous dynamics with time-invariant first \
+integrals obtained with the Noether procedure. It is only that the Lagrangian \
+for the LV system, once obtained, is explicitly time-independent that we have \
+a conserved charge after effecting infinitesimal time translation. The \
+Gompertz and Verhulst models are autonomous, continuous-time, two-dimensional \
+dynamical systems, just like the LV system, but their Lagrangians---as \
+obtained via the method of the Jacobi Last Multiplier---are explicitly \
+time-dependent, and thus Noether\[CloseCurlyQuote]s procedure will not yield \
+any conserved charge."
+}], "Subtitle",
+ CellChangeTimes->{{3.990219136479846*^9, 3.990219150292721*^9}, {
+  3.990219192872212*^9, 
+  3.990219336695524*^9}},ExpressionUUID->"60011b90-d352-4347-8166-\
+6c77c740731f"],
+
+Cell[CellGroupData[{
+
+Cell["(#1): Lotka-Volterra Model:", "Chapter",
+ CellChangeTimes->{{3.990218003903257*^9, 3.990218011000128*^9}, {
+  3.99021833341712*^9, 
+  3.990218333631913*^9}},ExpressionUUID->"2656d250-0b1a-43a9-8bc7-\
+35315e705abc"],
+
+Cell[CellGroupData[{
+
+Cell["(#1.1): Dynamical Equations:", "Section",
+ CellChangeTimes->{{3.990218014075122*^9, 3.990218022563631*^9}, {
+  3.9902183344057217`*^9, 
+  3.990218334459448*^9}},ExpressionUUID->"9ab2b780-09b3-4c2d-9eb0-\
+1d976d16e9e2"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LVDynamicalSystem", "=", 
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{
+       RowBox[{"b", " ", 
+        RowBox[{"Exp", "[", "r2", "]"}]}], "+", "a"}]}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{
+       RowBox[{"B", " ", 
+        RowBox[{"Exp", "[", "r1", "]"}]}], "+", "A"}]}]}], 
+    "\[IndentingNewLine]", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.990218025677373*^9, 3.990218044268899*^9}},
+ CellLabel->"In[9]:=",ExpressionUUID->"c727ef96-8948-4c83-adda-ee9b426dc6a8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#1.2): Nucci\[CloseCurlyQuote]s Lagrangian Eq. (2):", "Section",
+ CellChangeTimes->{{3.990218048343115*^9, 3.990218056656662*^9}, {
+  3.990218335428369*^9, 
+  3.990218335482304*^9}},ExpressionUUID->"ea93e18d-9a48-4766-b680-\
+0031523a5489"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LVLagrangianRVariable", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"r1", "[", "t", "]"}], "*", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+      "]"}]}], "-", 
+    RowBox[{
+     RowBox[{"r2", "[", "t", "]"}], "*", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+      "]"}]}], "+", 
+    RowBox[{"2", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "B"}], " ", 
+        RowBox[{"Exp", "[", "r1", "]"}]}], "+", 
+       RowBox[{"b", " ", 
+        RowBox[{"Exp", "[", "r2", "]"}]}], "-", 
+       RowBox[{"A", " ", "r1"}], "+", 
+       RowBox[{"a", " ", "r2"}]}], ")"}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.990218059465591*^9, 3.990218065500347*^9}, {
+  3.99021815427671*^9, 3.990218189767086*^9}},
+ CellLabel->"In[22]:=",ExpressionUUID->"a7cf9e0a-7ca6-444c-8648-bfe2e0e0bcd4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#1.3): Noether Charge:", "Section",
+ CellChangeTimes->{
+  3.990218195443769*^9, {3.990218336311069*^9, 
+   3.99021833636901*^9}},ExpressionUUID->"9bf11ac3-0352-4a7c-92eb-\
+b6b0d312f66d"],
+
+Cell[CellGroupData[{
+
+Cell["(#1.3.1): Defining the Noether Charge:", "Subsection",
+ CellChangeTimes->{
+  3.9902182297628613`*^9, {3.9902183372284527`*^9, 
+   3.9902183372986927`*^9}},ExpressionUUID->"ed06eaca-5acf-4138-8e8b-\
+f0a51295f2a5"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LVNoetherCharge", "=", 
+   RowBox[{
+    RowBox[{"-", "LVLagrangianRVariable"}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+      "]"}], "*", 
+     RowBox[{"D", "[", 
+      RowBox[{"LVLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+        "]"}]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+      "]"}], "*", 
+     RowBox[{"D", "[", 
+      RowBox[{"LVLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+        "]"}]}], "]"}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.9902182134360437`*^9, 3.9902182194701567`*^9}},
+ CellLabel->"In[23]:=",ExpressionUUID->"ca73b3d5-56d8-41d5-a310-ee9ee9c065fb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#1.3.2): Total Derivative of Noether Charge:", "Subsection",
+ CellChangeTimes->{
+  3.990218224974182*^9, {3.990218338133462*^9, 
+   3.9902183392064257`*^9}},ExpressionUUID->"8ba080d1-3b77-42f8-9248-\
+4020b3a4deec"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"D", "[", 
+     RowBox[{"LVNoetherCharge", ",", "t"}], "]"}], "/.", " ", 
+    "LVDynamicalSystem"}], ",", 
+   RowBox[{"Assumptions", "->", 
+    RowBox[{
+     RowBox[{"b", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"B", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"a", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"A", "\[Element]", "Reals"}]}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.99021823584269*^9, 3.990218264520205*^9}, {
+  3.990218399403019*^9, 3.990218401077732*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"d7d19b54-750a-4cfa-a27f-5e80b35621eb"],
+
+Cell[BoxData["0"], "Output",
+ CellChangeTimes->{{3.990218239406622*^9, 3.990218265282053*^9}, 
+   3.990218401507638*^9},
+ CellLabel->"Out[31]=",ExpressionUUID->"9ee6ea43-3200-4685-93d9-a700833373b8"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#2): Gompertz Model:", "Chapter",
+ CellChangeTimes->{{3.990217874084395*^9, 3.9902178796570253`*^9}, {
+  3.990218340590724*^9, 
+  3.990218340659129*^9}},ExpressionUUID->"a5bcc580-c0ba-47df-8c8c-\
+21fdd440a1ef"],
+
+Cell[CellGroupData[{
+
+Cell["(#2.1): Dynamical Equations:", "Section",
+ CellChangeTimes->{{3.9902178807004137`*^9, 3.990217886048012*^9}, {
+  3.990218341445002*^9, 
+  3.99021834150982*^9}},ExpressionUUID->"c4e876be-6b5f-4a98-9985-\
+9f71db7fe0a1"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"GompertzDynamicalSystem", "=", 
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{
+       RowBox[{"m2", " ", "B", " ", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"r1", "[", "t", "]"}], "]"}]}], "+", 
+       RowBox[{"A", " ", 
+        RowBox[{"r1", "[", "t", "]"}]}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{
+       RowBox[{"m1", " ", "b", " ", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"r1", "[", "t", "]"}], "]"}]}], "+", 
+       RowBox[{"a", " ", 
+        RowBox[{"r2", "[", "t", "]"}]}]}]}]}], "\[IndentingNewLine]", "}"}]}],
+   ";"}]], "Input",
+ CellChangeTimes->{{3.99021751456981*^9, 3.990217536095827*^9}, {
+  3.990217675446898*^9, 3.990217689374469*^9}, {3.9902178957899103`*^9, 
+  3.9902179077323923`*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"39f43e3a-a9ae-4c08-ac0b-a4afefebca7e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#2.2): Nucci\[CloseCurlyQuote]s Lagrangian Eq. (39):", "Section",
+ CellChangeTimes->{{3.990217919265594*^9, 3.990217927007742*^9}, {
+  3.990218342728301*^9, 
+  3.9902183615955*^9}},ExpressionUUID->"22f47a38-1a07-4c2a-825e-6f6ea0dc0c3e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"GompertzLagrangianRVariable", "=", 
+   RowBox[{
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{"-", 
+       RowBox[{"(", 
+        RowBox[{"a", "+", "A"}], ")"}]}], " ", "t"}], "]"}], 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"r1", "[", "t", "]"}], "*", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+        "]"}]}], "-", 
+      RowBox[{
+       RowBox[{"r2", "[", "t", "]"}], "*", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+        "]"}]}], "-", 
+      RowBox[{"2", " ", "m1", " ", "b", " ", 
+       RowBox[{"Exp", "[", 
+        RowBox[{"r1", "[", "t", "]"}], "]"}]}], "+", 
+      RowBox[{"2", " ", "m2", " ", "B", " ", 
+       RowBox[{"Exp", "[", 
+        RowBox[{"r2", "[", "t", "]"}], "]"}]}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"A", "-", "a"}], ")"}], " ", 
+       RowBox[{"r1", "[", "t", "]"}], " ", 
+       RowBox[{"r2", "[", "t", "]"}]}]}], ")"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.990217582754073*^9, 3.9902175955242968`*^9}, {
+   3.990217647282711*^9, 3.9902176491469*^9}, {3.990217703214123*^9, 
+   3.990217718568242*^9}, 3.9902178381818247`*^9, {3.990217914812503*^9, 
+   3.990217931075325*^9}, 3.990218071953628*^9, {3.9902181462425737`*^9, 
+   3.990218152700795*^9}, 
+   3.990218355307067*^9},ExpressionUUID->"5158520d-26fb-44b4-b102-\
+d52712727116"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#2.3): Noether Charge:", "Section",
+ CellChangeTimes->{{3.990217938467717*^9, 3.990217942074134*^9}, {
+  3.990218343659647*^9, 
+  3.990218343718446*^9}},ExpressionUUID->"2915e00b-f2f1-4388-a96c-\
+6f29f2c1180d"],
+
+Cell[CellGroupData[{
+
+Cell["(#2.3.1): Defining the Noether Charge:", "Subsection",
+ CellChangeTimes->{{3.990217950710559*^9, 3.9902179574151793`*^9}, {
+  3.990218345149589*^9, 
+  3.990218345199301*^9}},ExpressionUUID->"5f32d4b6-86ef-498c-a4f8-\
+d3c0d41c3458"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"GompertzNoetherCharge", "=", 
+   RowBox[{
+    RowBox[{"-", "GompertzLagrangianRVariable"}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+      "]"}], "*", 
+     RowBox[{"D", "[", 
+      RowBox[{"GompertzLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+        "]"}]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+      "]"}], "*", 
+     RowBox[{"D", "[", 
+      RowBox[{"GompertzLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+        "]"}]}], "]"}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.990217943268124*^9, 3.990217943269073*^9}, {
+   3.9902182008557463`*^9, 3.990218204727199*^9}, {3.9902183790458183`*^9, 
+   3.990218381619855*^9}, 3.990218811118322*^9},
+ CellLabel->"In[29]:=",ExpressionUUID->"f62c9b7c-6c87-40e4-8091-e55201a99b53"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#2.3.2): Total Derivative of Noether Charge:", "Subsection",
+ CellChangeTimes->{{3.9902179590942698`*^9, 3.990217968269014*^9}, {
+  3.990218346661613*^9, 
+  3.9902183467170267`*^9}},ExpressionUUID->"cca2a5ab-67eb-4d1d-8c1f-\
+5f7652ba37e5"],
+
+Cell[TextData[{
+ "We are making the same argument as Nucci earlier: the dynamics are \
+time-invariant, and so there ought to be a conserved charge when we make an \
+infinitesimal time translation. Obviously, that is not what is present in the \
+Lagrangian that Nucci derived, but that was the argument offered on page 6: \
+\[OpenCurlyDoubleQuote]We note that [the LV equations] are autonomous and \
+therefore invariant under time translation, namely ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[PartialD]", "t"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "3f0ccae8-4c39-49d5-9e14-005f754c651d"],
+ ". It is easy to show that the Lagrangian ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["L", 
+    RowBox[{"[", "w", "]"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "654a2b37-54f6-496b-a629-0a7e8f9e5352"],
+ " in (24) yields a time-invariant first integral through Noether\
+\[CloseCurlyQuote]s theorem [15]...\[CloseCurlyDoubleQuote]"
+}], "Text",
+ CellChangeTimes->{{3.990218671331168*^9, 
+  3.990218778462614*^9}},ExpressionUUID->"ce403538-1b34-4fcd-8218-\
+795c2bd34bbc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"D", "[", 
+     RowBox[{"GompertzNoetherCharge", ",", "t"}], "]"}], "/.", " ", 
+    "GompertzDynamicalSystem"}], ",", 
+   RowBox[{"Assumptions", "->", 
+    RowBox[{
+     RowBox[{"b", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"B", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"a", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"A", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"m1", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"m2", "\[Element]", "Reals"}]}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.9902179698331213`*^9, 3.99021797865305*^9}, {
+  3.990218092844041*^9, 3.9902181213957033`*^9}, {3.9902183847984543`*^9, 
+  3.9902184157812967`*^9}},
+ CellLabel->"In[33]:=",ExpressionUUID->"d0d8b210-8290-4f03-bcc6-4fe13a47fcc6"],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox["\[ExponentialE]", 
+   RowBox[{"-", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"a", "+", "A"}], ")"}], " ", "t"}], ")"}]}]], " ", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "2"}], " ", "B", " ", 
+     SuperscriptBox["\[ExponentialE]", 
+      RowBox[{"r2", "[", "t", "]"}]], " ", "m2", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "a"}], "-", "A", "+", 
+       RowBox[{"b", " ", 
+        SuperscriptBox["\[ExponentialE]", 
+         RowBox[{"r1", "[", "t", "]"}]], " ", "m1"}], "+", 
+       RowBox[{"a", " ", 
+        RowBox[{"r2", "[", "t", "]"}]}]}], ")"}]}], "+", 
+    RowBox[{
+     SuperscriptBox["\[ExponentialE]", 
+      RowBox[{"r1", "[", "t", "]"}]], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "b", " ", "m1", " ", 
+        RowBox[{"(", 
+         RowBox[{"a", "+", "A", "-", 
+          RowBox[{"B", " ", 
+           SuperscriptBox["\[ExponentialE]", 
+            RowBox[{"r1", "[", "t", "]"}]], " ", "m2"}]}], ")"}]}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"a", "+", "A"}], ")"}], " ", "b", " ", "m1", " ", 
+        RowBox[{"r1", "[", "t", "]"}]}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"a", "-", "A"}], ")"}], " ", "B", " ", "m2", " ", 
+        RowBox[{"r2", "[", "t", "]"}]}]}], ")"}]}]}], ")"}]}]], "Output",
+ CellChangeTimes->{{3.9902179755511093`*^9, 3.990217986443001*^9}, {
+  3.9902180879272947`*^9, 3.990218122009139*^9}, {3.99021839542421*^9, 
+  3.990218417435335*^9}},
+ CellLabel->"Out[33]=",ExpressionUUID->"315b4792-12d0-43a0-880c-5d7ca01c0b5f"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#3): Verhulst Model:", "Chapter",
+ CellChangeTimes->{{3.990218453406755*^9, 
+  3.990218460673627*^9}},ExpressionUUID->"56cdb2ee-4863-4855-9a2c-\
+c82d45988226"],
+
+Cell[CellGroupData[{
+
+Cell["(#3.1): Dynamical Equations:", "Section",
+ CellChangeTimes->{{3.990218463729734*^9, 
+  3.990218465249667*^9}},ExpressionUUID->"e19e32c3-432f-48c7-8f2d-\
+03fc648c3420"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"VerhulstDynamicalSystem", "=", 
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{"A", "+", 
+       RowBox[{"B", " ", 
+        RowBox[{"Exp", "[", "r1", "]"}]}], "+", 
+       RowBox[{"f1", " ", 
+        RowBox[{"Exp", "[", "r2", "]"}]}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+       "]"}], "->", 
+      RowBox[{"a", "+", 
+       RowBox[{"b", " ", 
+        RowBox[{"Exp", "[", "r2", "]"}]}], "+", 
+       RowBox[{"f2", " ", 
+        RowBox[{"Exp", "[", "r1", "]"}]}]}]}]}], "\[IndentingNewLine]", 
+    "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.99021847049629*^9, 3.990218495479789*^9}, 
+   3.990218848094246*^9},
+ CellLabel->"In[38]:=",ExpressionUUID->"c97b8143-1714-4c26-b21b-2b49ee4d0cda"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#3.2): Nucci\[CloseCurlyQuote]s Lagrangian Eq. (60):", "Section",
+ CellChangeTimes->{{3.990218500613862*^9, 3.990218503209268*^9}, {
+  3.990218797080982*^9, 
+  3.990218797117934*^9}},ExpressionUUID->"31c4f49d-a1e1-41be-ab84-\
+b0361957630c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"VerhulstLagrangianRVariable", "=", 
+   RowBox[{
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"b1", "+", "1"}], ")"}], "r1"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"b2", "+", "1"}], ")"}], "r2"}], "+", 
+      RowBox[{"b3", " ", "t"}]}], "]"}], 
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox[
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+        "]"}], 
+       RowBox[{"b1", "+", "1"}]], "-", 
+      FractionBox[
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+        "]"}], 
+       RowBox[{"b2", "+", "1"}]], "-", 
+      RowBox[{"(", 
+       RowBox[{
+        FractionBox[
+         RowBox[{"2", "f2", " ", 
+          RowBox[{"Exp", "[", "r1", "]"}]}], 
+         RowBox[{"b1", "+", "2"}]], "+", 
+        FractionBox[
+         RowBox[{"2", "b", " ", 
+          RowBox[{"Exp", "[", "r2", "]"}]}], 
+         RowBox[{"b1", "+", "1"}]], "+", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"2", "a", 
+           RowBox[{"(", 
+            RowBox[{"b2", "+", "1"}], ")"}]}], "+", "b3"}], 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"b1", "+", "1"}], ")"}], 
+          RowBox[{"(", 
+           RowBox[{"b2", "+", "1"}], ")"}]}]]}], ")"}]}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"b1", "=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "B", " ", "b"}], "+", 
+     RowBox[{"b", " ", "f2"}], "+", 
+     RowBox[{"f1", " ", "f2"}]}], 
+    RowBox[{
+     RowBox[{"B", " ", "b"}], " ", "-", 
+     RowBox[{"f1", " ", "f2"}]}]]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"b2", "=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "B", " ", "b"}], " ", "+", 
+     RowBox[{"B", " ", "f1"}], " ", "+", 
+     RowBox[{"f1", " ", "f2"}]}], 
+    RowBox[{
+     RowBox[{"B", " ", "b"}], "-", 
+     RowBox[{"f1", " ", "f2"}]}]]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"b3", "=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"A", " ", "B", " ", "b"}], "-", 
+     RowBox[{"A", " ", "b", " ", "f2"}], "+", 
+     RowBox[{"a", " ", "B", " ", "b"}], "-", 
+     RowBox[{"a", " ", "B", " ", "f1"}]}], 
+    RowBox[{
+     RowBox[{"B", " ", "b"}], " ", "-", 
+     RowBox[{"f1", " ", "f2"}]}]]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.990218553879773*^9, 3.9902186648940907`*^9}, {
+  3.990218902328964*^9, 3.990218953871437*^9}},
+ CellLabel->"In[48]:=",ExpressionUUID->"29d3fdb8-3d70-481a-9a8d-3ca086087992"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#3.3): Noether Charge:", "Section",
+ CellChangeTimes->{{3.990218799053445*^9, 
+  3.990218800753109*^9}},ExpressionUUID->"6a568945-7fa0-45fd-ba44-\
+9a7edb59ab39"],
+
+Cell[CellGroupData[{
+
+Cell["(#3.3.1): Defining the Noether Charge:", "Subsection",
+ CellChangeTimes->{{3.99021880416113*^9, 
+  3.990218805110118*^9}},ExpressionUUID->"d80401e3-5c41-4d37-b0cb-\
+7dc4d1f4a6fc"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"VerhulstNoetherCharge", "=", 
+   RowBox[{
+    RowBox[{"-", "VerhulstLagrangianRVariable"}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+      "]"}], 
+     RowBox[{"D", "[", 
+      RowBox[{"VerhulstLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r1", "]"}], "[", "t", 
+        "]"}]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+      "]"}], 
+     RowBox[{"D", "[", 
+      RowBox[{"VerhulstLagrangianRVariable", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Derivative", "[", "1", "]"}], "[", "r2", "]"}], "[", "t", 
+        "]"}]}], "]"}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.990218817246221*^9, 3.990218831592408*^9}},
+ CellLabel->"In[52]:=",ExpressionUUID->"7ec1abd5-a1f7-4277-8b25-bd89580f9c68"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["(#3.3.2): Total Derivative of Noether Charge:", "Subsection",
+ CellChangeTimes->{{3.990218808006852*^9, 
+  3.990218809018095*^9}},ExpressionUUID->"3c615100-6546-4195-9612-\
+683c25ab93b3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"D", "[", 
+     RowBox[{"VerhulstNoetherCharge", ",", "t"}], "]"}], "/.", 
+    "VerhulstDynamicalSystem"}], ",", 
+   RowBox[{"Assumptions", "->", 
+    RowBox[{
+     RowBox[{"A", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"a", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"B", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"b", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"f1", "\[Element]", "Reals"}], "&&", 
+     RowBox[{"f2", "\[Element]", "Reals"}]}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.990218837461821*^9, 3.9902188722384453`*^9}},
+ CellLabel->"In[53]:=",ExpressionUUID->"b78adc4c-179d-4cef-bb72-0a391ddae572"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   SuperscriptBox["\[ExponentialE]", 
+    FractionBox[
+     RowBox[{
+      RowBox[{"B", " ", "f1", " ", 
+       RowBox[{"(", 
+        RowBox[{"r2", "-", 
+         RowBox[{"a", " ", "t"}]}], ")"}]}], "+", 
+      RowBox[{"b", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", "B"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"r1", "+", "r2"}], ")"}]}], "+", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"a", "+", "A"}], ")"}], " ", "B", " ", "t"}], "+", 
+         RowBox[{"f2", " ", 
+          RowBox[{"(", 
+           RowBox[{"r1", "-", 
+            RowBox[{"A", " ", "t"}]}], ")"}]}]}], ")"}]}]}], 
+     RowBox[{
+      RowBox[{"b", " ", "B"}], "-", 
+      RowBox[{"f1", " ", "f2"}]}]]], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"a", " ", "B", " ", 
+      RowBox[{"(", 
+       RowBox[{"b", "-", "f1"}], ")"}]}], "+", 
+     RowBox[{"A", " ", "b", " ", 
+      RowBox[{"(", 
+       RowBox[{"B", "-", "f2"}], ")"}]}]}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "b", " ", "B", " ", 
+      SuperscriptBox["\[ExponentialE]", "r2"], " ", 
+      RowBox[{"(", 
+       RowBox[{"b", "-", "f1"}], ")"}]}], "+", 
+     RowBox[{"a", " ", "B", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "b"}], "+", "f1"}], ")"}]}], "+", 
+     RowBox[{"b", " ", 
+      RowBox[{"(", 
+       RowBox[{"A", "+", 
+        RowBox[{"2", " ", "B", " ", 
+         SuperscriptBox["\[ExponentialE]", "r1"]}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"B", "-", "f2"}], ")"}]}]}], ")"}]}], 
+  RowBox[{"b", " ", "B", " ", 
+   RowBox[{"(", 
+    RowBox[{"b", "-", "f1"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"B", "-", "f2"}], ")"}]}]]], "Output",
+ CellChangeTimes->{3.990218872924816*^9, 3.99021896211173*^9},
+ CellLabel->"Out[53]=",ExpressionUUID->"c2b150ad-3138-46e6-b17c-15d660cdf788"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1867.5, 1032},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"13.3 for Linux x86 (64-bit) (July 24, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"ad27438f-7682-4916-9f6c-3ce9b415e57f"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 293, 7, 98, "Title",ExpressionUUID->"cfec5e9a-a400-4593-a4e1-454d4e481c09"],
+Cell[876, 31, 1668, 32, 214, "Subtitle",ExpressionUUID->"60011b90-d352-4347-8166-6c77c740731f"],
+Cell[CellGroupData[{
+Cell[2569, 67, 220, 4, 69, "Chapter",ExpressionUUID->"2656d250-0b1a-43a9-8bc7-35315e705abc"],
+Cell[CellGroupData[{
+Cell[2814, 75, 224, 4, 67, "Section",ExpressionUUID->"9ab2b780-09b3-4c2d-9eb0-1d976d16e9e2"],
+Cell[3041, 81, 828, 24, 94, "Input",ExpressionUUID->"c727ef96-8948-4c83-adda-ee9b426dc6a8"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3906, 110, 246, 4, 67, "Section",ExpressionUUID->"ea93e18d-9a48-4766-b680-0031523a5489"],
+Cell[4155, 116, 959, 28, 31, "Input",ExpressionUUID->"a7cf9e0a-7ca6-444c-8648-bfe2e0e0bcd4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5151, 149, 193, 4, 67, "Section",ExpressionUUID->"9bf11ac3-0352-4a7c-92eb-b6b0d312f66d"],
+Cell[CellGroupData[{
+Cell[5369, 157, 218, 4, 54, "Subsection",ExpressionUUID->"ed06eaca-5acf-4138-8e8b-f0a51295f2a5"],
+Cell[5590, 163, 978, 28, 29, "Input",ExpressionUUID->"ca73b3d5-56d8-41d5-a310-ee9ee9c065fb"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6605, 196, 221, 4, 54, "Subsection",ExpressionUUID->"8ba080d1-3b77-42f8-9248-4020b3a4deec"],
+Cell[CellGroupData[{
+Cell[6851, 204, 641, 15, 31, "Input",ExpressionUUID->"d7d19b54-750a-4cfa-a27f-5e80b35621eb"],
+Cell[7495, 221, 199, 3, 33, "Output",ExpressionUUID->"9ee6ea43-3200-4685-93d9-a700833373b8"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7767, 232, 217, 4, 69, "Chapter",ExpressionUUID->"a5bcc580-c0ba-47df-8c8c-21fdd440a1ef"],
+Cell[CellGroupData[{
+Cell[8009, 240, 223, 4, 67, "Section",ExpressionUUID->"c4e876be-6b5f-4a98-9985-9f71db7fe0a1"],
+Cell[8235, 246, 1146, 31, 94, "Input",ExpressionUUID->"39f43e3a-a9ae-4c08-ac0b-a4afefebca7e"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9418, 282, 243, 3, 67, "Section",ExpressionUUID->"22f47a38-1a07-4c2a-825e-6f6ea0dc0c3e"],
+Cell[9664, 287, 1489, 40, 31, "Input",ExpressionUUID->"5158520d-26fb-44b4-b102-d52712727116"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11190, 332, 217, 4, 67, "Section",ExpressionUUID->"2915e00b-f2f1-4388-a96c-6f29f2c1180d"],
+Cell[CellGroupData[{
+Cell[11432, 340, 237, 4, 54, "Subsection",ExpressionUUID->"5f32d4b6-86ef-498c-a4f8-d3c0d41c3458"],
+Cell[11672, 346, 1124, 30, 29, "Input",ExpressionUUID->"f62c9b7c-6c87-40e4-8091-e55201a99b53"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12833, 381, 246, 4, 54, "Subsection",ExpressionUUID->"cca2a5ab-67eb-4d1d-8c1f-5f7652ba37e5"],
+Cell[13082, 387, 1123, 24, 58, "Text",ExpressionUUID->"ce403538-1b34-4fcd-8218-795c2bd34bbc"],
+Cell[CellGroupData[{
+Cell[14230, 415, 812, 18, 31, "Input",ExpressionUUID->"d0d8b210-8290-4f03-bcc6-4fe13a47fcc6"],
+Cell[15045, 435, 1653, 45, 38, "Output",ExpressionUUID->"315b4792-12d0-43a0-880c-5d7ca01c0b5f"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[16771, 488, 166, 3, 69, "Chapter",ExpressionUUID->"56cdb2ee-4863-4855-9a2c-c82d45988226"],
+Cell[CellGroupData[{
+Cell[16962, 495, 173, 3, 67, "Section",ExpressionUUID->"e19e32c3-432f-48c7-8f2d-03fc648c3420"],
+Cell[17138, 500, 1006, 28, 94, "Input",ExpressionUUID->"c97b8143-1714-4c26-b21b-2b49ee4d0cda"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18181, 533, 247, 4, 67, "Section",ExpressionUUID->"31c4f49d-a1e1-41be-ab84-b0361957630c"],
+Cell[18431, 539, 2637, 83, 204, "Input",ExpressionUUID->"29d3fdb8-3d70-481a-9a8d-3ca086087992"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21105, 627, 168, 3, 67, "Section",ExpressionUUID->"6a568945-7fa0-45fd-ba44-9a7edb59ab39"],
+Cell[CellGroupData[{
+Cell[21298, 634, 185, 3, 54, "Subsection",ExpressionUUID->"d80401e3-5c41-4d37-b0cb-7dc4d1f4a6fc"],
+Cell[21486, 639, 988, 28, 29, "Input",ExpressionUUID->"7ec1abd5-a1f7-4277-8b25-bd89580f9c68"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22511, 672, 193, 3, 54, "Subsection",ExpressionUUID->"3c615100-6546-4195-9612-683c25ab93b3"],
+Cell[CellGroupData[{
+Cell[22729, 679, 704, 16, 29, "Input",ExpressionUUID->"b78adc4c-179d-4cef-bb72-0a391ddae572"],
+Cell[23436, 697, 1925, 59, 75, "Output",ExpressionUUID->"c2b150ad-3138-46e6-b17c-15d660cdf788"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
